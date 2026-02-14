@@ -1,0 +1,30 @@
+name: Reject Notebook Outputs
+on:
+  pull_request:
+  push:
+    paths:
+      - '**/*.ipynb'
+jobs:
+  check-outputs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for outputs
+        id: check
+        run: |
+          NOTEBOOKS=$(find . -name '*.ipynb')
+          if [ -z "$NOTEBOOKS" ]; then
+            echo "No notebooks found."
+            exit 0
+          fi
+          python scripts/strip_notebook_outputs.py --check $NOTEBOOKS
+        continue-on-error: ${{ github.event_name == 'push' }}
+      - name: Alert on push with outputs
+        if: ${{ github.event_name == 'push' && steps.check.outcome == 'failure' }}
+        run: |
+          echo "::warning::Notebook outputs detected on branch ${{ github.ref_name }}. Run: python scripts/strip_notebook_outputs.py *.ipynb"
+      - name: Fail PR with outputs
+        if: ${{ github.event_name == 'pull_request' && steps.check.outcome == 'failure' }}
+        run: |
+          echo "ERROR: Notebook outputs detected. Run: python scripts/strip_notebook_outputs.py *.ipynb"
+          exit 1

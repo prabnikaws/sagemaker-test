@@ -1,0 +1,21 @@
+#!/bin/bash
+# Git post-checkout hook — auto-installs pre-commit hooks and git clean filter
+# when a repo with .pre-commit-config.yaml is cloned or checked out.
+#
+# This hook is installed globally via git's init.templateDir setting
+# in the custom Docker image. It runs automatically after every
+# git clone, git checkout, and git switch.
+
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+
+if [ -f "$REPO_ROOT/.pre-commit-config.yaml" ]; then
+  cd "$REPO_ROOT"
+
+  # Install pre-commit hooks into .git/hooks/
+  pre-commit install 2>/dev/null
+
+  # Configure the git clean filter for notebook output stripping
+  git config filter.strip-notebooks.clean "python scripts/strip_notebook_outputs.py"
+  git config filter.strip-notebooks.smudge cat
+  git config filter.strip-notebooks.required true
+fi
