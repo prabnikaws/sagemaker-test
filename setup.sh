@@ -1,4 +1,7 @@
 #!/bin/bash
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 # Configure notebook output stripping for this repository.
 # Run this once after cloning: ./setup.sh
 set -e

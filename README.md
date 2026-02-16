@@ -135,7 +135,7 @@ That's it. No manual setup needed.
 ### If No Custom Docker Image (Manual Setup)
 
 1. Open SageMaker Unified Studio → your project → launch JupyterLab
-2. Open a terminal: File → New → Terminal
+2. Open a terminal from a notebook (e.g., click the terminal icon in the JupyterLab launcher, or use the `+` button to open a new launcher and select Terminal)
 3. Navigate to your notebook repo:
 
 ```bash
